@@ -1,6 +1,6 @@
 <p>
-  <img src="./docs/logo.png" width="180" style="padding: 10px" align="left" />
-  <strong style="font-size: 3em">Alchemy QL</strong><br>
+  <img src="https://raw.githubusercontent.com/nicholasfelixwilliams/alchemyql/main/docs/logo.png" width="200" style="padding: 10px" align="left" />
+  <h3 style="font-size: 3.5em; margin: 0;">Alchemy QL</h3>
   <em>Lightweight GraphQL engine powered by SQLAlchemy</em>
 </p>
 
@@ -33,10 +33,25 @@ Alchemy QL's key features include:
 
 ---
 
+### ℹ️ Installation
+
+```sh
+# Using pip
+pip install alchemyql
+
+# Using poetry
+poetry add alchemyql
+
+# Using uv
+uv add alchemyql
+```
+
+---
+
 ### 📦 Dependencies
 
-- SQLAlchemy 2
-- Graph QL core
+- <a href="https://github.com/sqlalchemy/sqlalchemy" target="_blank">Sqlalchemy</a> (v2)
+- <a href="https://github.com/graphql-python/graphql-core" target="_blank">Graph QL Core</a>
 
 ---
 
@@ -125,12 +140,14 @@ All other types are not currently supported for filtering.
 
 ---
 
-### Logging
+### 📘 Logging
 
 AlchemyQL uses the "alchemyql" logger.
 
+Other docs can be found in: <a href="https://github.com/nicholasfelixwilliams/alchemyql/tree/main/docs" target="_blank">docs/</a>
+
 ---
 
-### License
+### ℹ️ License
 
 This project is licensed under the terms of the MIT license.

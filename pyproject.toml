@@ -1,6 +1,6 @@
 [project]
 name = "alchemyql"
-version = "0.0.1"
+version = "0.0.1a1"
 description = "Lightweight Graph QL engine powered by SQL Alchemy"
 readme = "README.md"
 authors = [
@@ -9,12 +9,16 @@ authors = [
 license = "MIT"
 license-files = ["LICENSE"]
 keywords = ["graphql", "sqlalchemy", "database", "graphql-engine"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
 homepage = "https://github.com/nicholasfelixwilliams/alchemyql"
 repository = "https://github.com/nicholasfelixwilliams/alchemyql"
 requires-python = ">=3.12"
 dependencies = [
-    "graphql-core>=3.2.7",
-    "sqlalchemy>=2.0.44",
+    "graphql-core>=3.2.4",
+    "sqlalchemy>=2.0.35",
 ]
 
 [build-system]
