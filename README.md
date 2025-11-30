@@ -1,14 +1,8 @@
-<table>
-  <tr>
-    <td width="150" align="left">
-      <img src="./docs/logo.png" width="150" alt="AlchemyQL">
-    </td>
-    <td align="left">
-      <h3 style="font-size: 3.5em; margin: 0;">Alchemy QL</h3>
-      <em>Lightweight Graph QL engine powered by SQL Alchemy</em>
-    </td>
-  </tr>
-</table>
+<p>
+  <img src="./docs/logo.png" width="180" style="padding: 10px" align="left" />
+  <strong style="font-size: 3em">Alchemy QL</strong><br>
+  <em>Lightweight GraphQL engine powered by SQLAlchemy</em>
+</p>
 
 ---
 
