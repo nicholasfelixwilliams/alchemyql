@@ -1,0 +1,16 @@
+{
+  "query": "query { sample_tables(filter: {enum_field: {ne: ODD}}) { enum_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "enum_field": "EVEN",
+        "int_field": 2
+      },
+      {
+        "enum_field": "EVEN",
+        "int_field": 4
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "query": "query { sample_table_1s (filter: {int_field: {gt: 1}}, offset: 1) { string_field int_field }, sample_table_2s (filter: {int_field: {gt: 2}}, offset: 1) { string_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_table_1s": [
+      {
+        "string_field": "Three",
+        "int_field": 3
+      },
+      {
+        "string_field": "Four",
+        "int_field": 4
+      },
+      {
+        "string_field": "Five",
+        "int_field": 5
+      }
+    ],
+    "sample_table_2s": [
+      {
+        "string_field": "Four",
+        "int_field": 4
+      },
+      {
+        "string_field": "Five",
+        "int_field": 5
+      }
+    ]
+  }
+}

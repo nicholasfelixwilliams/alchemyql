@@ -1,0 +1,59 @@
+type Query {
+  sample_tables(filter: sample_table_filter, limit: Int = null, offset: Int = 0, order: sample_table_order): [sample_table]
+}
+
+type sample_table {
+  string_field: String!
+  int_field: Int!
+  float_field: Float!
+  bool_field: Boolean!
+  date_field: Date!
+  datetime_field: DateTime!
+  time_field: Time!
+  enum_field: SampleEnum!
+  nullable_field: String
+}
+
+scalar Date
+
+scalar DateTime
+
+scalar Time
+
+enum SampleEnum {
+  ODD
+  EVEN
+}
+
+input sample_table_filter {
+  string_field: StringFilter
+  int_field: IntFilter
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  contains: String
+  startswith: String
+  endswith: String
+  in: [String]
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  ge: Int
+  lt: Int
+  le: Int
+  in: [Int]
+}
+
+input sample_table_order {
+  string_field: Order
+}
+
+enum Order {
+  ASC
+  DESC
+}

@@ -1,0 +1,82 @@
+type Query {
+  sample_table_1s(filter: sample_table_1_filter, limit: Int = null, offset: Int = 0): [sample_table_1]
+  sample_table_2s(filter: sample_table_2_filter, limit: Int = 5, offset: Int = 0): [sample_table_2]
+  sample_table_3s(filter: sample_table_3_filter): [sample_table_3]
+}
+
+type sample_table_1 {
+  string_field: String!
+  int_field: Int!
+  float_field: Float!
+  bool_field: Boolean!
+  date_field: Date!
+  datetime_field: DateTime!
+  time_field: Time!
+  bytes_field: Bytes!
+  enum_field: SampleEnum!
+}
+
+scalar Date
+
+scalar DateTime
+
+scalar Time
+
+scalar Bytes
+
+enum SampleEnum {
+  ODD
+  EVEN
+}
+
+input sample_table_1_filter {
+  string_field: StringFilter
+  int_field: IntFilter
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  contains: String
+  startswith: String
+  endswith: String
+  in: [String]
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  ge: Int
+  lt: Int
+  le: Int
+  in: [Int]
+}
+
+type sample_table_2 {
+  string_field: String!
+  int_field: Int!
+  float_field: Float!
+  bool_field: Boolean!
+  date_field: Date!
+  datetime_field: DateTime!
+  time_field: Time!
+  json_field: JSON!
+  enum_field: SampleEnum!
+}
+
+scalar JSON
+
+input sample_table_2_filter {
+  string_field: StringFilter
+  int_field: IntFilter
+}
+
+type sample_table_3 {
+  string_field: String!
+}
+
+input sample_table_3_filter {
+  string_field: StringFilter
+  int_field: IntFilter
+}

@@ -1,0 +1,16 @@
+{
+  "query": "query { sample_tables(filter: {bool_field: {ne: true}}) { string_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "string_field": "Two",
+        "int_field": 2
+      },
+      {
+        "string_field": "Four",
+        "int_field": 4
+      }
+    ]
+  }
+}

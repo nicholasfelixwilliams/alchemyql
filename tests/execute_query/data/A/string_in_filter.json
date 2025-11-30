@@ -1,0 +1,16 @@
+{
+  "query": "query { sample_tables(filter: {string_field: {in: [\"Two\", \"Five\"]}})  { string_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "string_field": "Two",
+        "int_field": 2
+      },
+      {
+        "string_field": "Five",
+        "int_field": 5
+      }
+    ]
+  }
+}

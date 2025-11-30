@@ -1,0 +1,12 @@
+{
+  "query": "query { sample_tables(filter: {string_field: {eq: \"Two\"}})  { string_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "string_field": "Two",
+        "int_field": 2
+      }
+    ]
+  }
+}

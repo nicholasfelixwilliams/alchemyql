@@ -1,0 +1,12 @@
+{
+  "query": "query { sample_tables(filter: {string_field: {endswith: \"e\", startswith: \"T\"}})  { string_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "string_field": "Three",
+        "int_field": 3
+      }
+    ]
+  }
+}

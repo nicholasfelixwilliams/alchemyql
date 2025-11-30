@@ -1,0 +1,41 @@
+type Query {
+  sample_tables(order: sample_table_order): [sample_table]
+}
+
+type sample_table {
+  string_field: String!
+  int_field: Int!
+  float_field: Float!
+  bool_field: Boolean!
+  date_field: Date!
+  datetime_field: DateTime!
+  time_field: Time!
+  bytes_field: Bytes!
+  json_field: JSON!
+  enum_field: SampleEnum!
+  nullable_field: String
+}
+
+scalar Date
+
+scalar DateTime
+
+scalar Time
+
+scalar Bytes
+
+scalar JSON
+
+enum SampleEnum {
+  ODD
+  EVEN
+}
+
+input sample_table_order {
+  string_field: Order
+}
+
+enum Order {
+  ASC
+  DESC
+}

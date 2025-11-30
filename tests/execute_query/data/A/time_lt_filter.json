@@ -1,0 +1,20 @@
+{
+  "query": "query { sample_tables(filter: {time_field: {lt: \"04:04:04\"}}) { time_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "time_field": "01:01:01",
+        "int_field": 1
+      },
+      {
+        "time_field": "02:02:02",
+        "int_field": 2
+      },
+      {
+        "time_field": "03:03:03",
+        "int_field": 3
+      }
+    ]
+  }
+}

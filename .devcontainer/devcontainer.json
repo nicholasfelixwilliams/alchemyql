@@ -4,6 +4,9 @@
     "dockerfile": "Dockerfile",
     "context": "."
   },
+  "containerEnv": {
+    "PATH": "$PATH:/workspaces/alchemyql/.venv/bin"
+  },
   "workspaceFolder": "/workspaces/alchemyql",
   "overrideCommand": false,
   "remoteUser": "vscode",

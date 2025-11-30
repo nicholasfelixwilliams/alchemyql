@@ -1,0 +1,20 @@
+{
+  "query": "query { sample_tables(filter: {float_field: {le: 3.33}}) { string_field float_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "string_field": "One",
+        "float_field": 1.11
+      },
+      {
+        "string_field": "Two",
+        "float_field": 2.22
+      },
+      {
+        "string_field": "Three",
+        "float_field": 3.33
+      }
+    ]
+  }
+}

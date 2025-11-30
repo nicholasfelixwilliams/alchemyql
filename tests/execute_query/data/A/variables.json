@@ -1,0 +1,16 @@
+{
+  "query": "query ($gt_num: Int, $lt_num: Int) { sample_tables(filter: {int_field: {gt: $gt_num, lt: $lt_num}}) { string_field int_field } }",
+  "variables": {"gt_num": 2, "lt_num": 5},
+  "expected": {
+    "sample_tables": [
+      {
+        "string_field": "Three",
+        "int_field": 3
+      },
+      {
+        "string_field": "Four",
+        "int_field": 4
+      }
+    ]
+  }
+}

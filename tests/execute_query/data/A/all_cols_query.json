@@ -1,0 +1,23 @@
+{
+  "query": "query { sample_tables (filter: {int_field: {eq: 1}}) {string_field, int_field, float_field, bool_field, date_field, datetime_field, time_field, bytes_field, json_field, enum_field, nullable_field} }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+            "string_field": "One",
+            "int_field": 1,
+            "float_field": 1.11,
+            "bool_field": true,
+            "date_field": "2000-01-01",
+            "datetime_field": "2000-01-01T01:01:01",
+            "time_field": "01:01:01",
+            "bytes_field": "YjY0OmFhYWFh",
+            "json_field": {
+                "key": "One"
+            },
+            "enum_field": "ODD",
+            "nullable_field": null
+        }
+    ]
+  }
+}

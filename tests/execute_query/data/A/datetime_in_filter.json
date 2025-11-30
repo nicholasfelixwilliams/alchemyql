@@ -1,0 +1,16 @@
+{
+  "query": "query { sample_tables(filter: {datetime_field: {in: [\"2000-01-01T01:01:01\", \"2000-03-03T03:03:03\"]}}) { datetime_field int_field } }",
+  "variables": null,
+  "expected": {
+    "sample_tables": [
+      {
+        "datetime_field": "2000-01-01T01:01:01",
+        "int_field": 1
+      },
+      {
+        "datetime_field": "2000-03-03T03:03:03",
+        "int_field": 3
+      }
+    ]
+  }
+}

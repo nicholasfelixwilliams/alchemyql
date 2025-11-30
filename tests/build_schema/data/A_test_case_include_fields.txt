@@ -1,0 +1,13 @@
+type Query {
+  sample_tables: [sample_table]
+}
+
+type sample_table {
+  string_field: String!
+  enum_field: SampleEnum!
+}
+
+enum SampleEnum {
+  ODD
+  EVEN
+}

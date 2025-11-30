@@ -1,0 +1,218 @@
+{
+    "SAMPLE_TABLE_1": [
+        {
+            "string_field": "One",
+            "int_field": 1,
+            "float_field": 1.11,
+            "bool_field": true,
+            "date_field": "2000-01-01",
+            "datetime_field": "2000-01-01T01:01:01",
+            "time_field": "01:01:01",
+            "bytes_field": "b64:aaaaa",
+            "json_field": {
+                "key": "One"
+            },
+            "enum_field": "ODD"
+        },
+        {
+            "string_field": "Two",
+            "int_field": 2,
+            "float_field": 2.22,
+            "bool_field": false,
+            "date_field": "2000-02-02",
+            "datetime_field": "2000-02-02T02:02:02",
+            "time_field": "02:02:02",
+            "bytes_field": "b64:bbbbb",
+            "json_field": {
+                "key": "Two"
+            },
+            "enum_field": "EVEN"
+        },
+        {
+            "string_field": "Three",
+            "int_field": 3,
+            "float_field": 3.33,
+            "bool_field": true,
+            "date_field": "2000-03-03",
+            "datetime_field": "2000-03-03T03:03:03",
+            "time_field": "03:03:03",
+            "bytes_field": "b64:ccccc",
+            "json_field": {
+                "key": "three"
+            },
+            "enum_field": "ODD"
+        },
+        {
+            "string_field": "Four",
+            "int_field": 4,
+            "float_field": 4.44,
+            "bool_field": false,
+            "date_field": "2000-04-04",
+            "datetime_field": "2000-04-04T04:04:04",
+            "time_field": "04:04:04",
+            "bytes_field": "b64:ddddd",
+            "json_field": {
+                "key": "four"
+            },
+            "enum_field": "EVEN"
+        },
+        {
+            "string_field": "Five",
+            "int_field": 5,
+            "float_field": 5.55,
+            "bool_field": true,
+            "date_field": "2000-05-05",
+            "datetime_field": "2000-05-05T05:05:05",
+            "time_field": "05:05:05",
+            "bytes_field": "b64:eeeee",
+            "json_field": {
+                "key": "five"
+            },
+            "enum_field": "ODD"
+        }
+    ],
+    "SAMPLE_TABLE_2": [
+        {
+            "string_field": "One",
+            "int_field": 1,
+            "float_field": 1.11,
+            "bool_field": true,
+            "date_field": "2000-01-01",
+            "datetime_field": "2000-01-01T01:01:01",
+            "time_field": "01:01:01",
+            "bytes_field": "b64:aaaaa",
+            "json_field": {
+                "key": "One"
+            },
+            "enum_field": "ODD"
+        },
+        {
+            "string_field": "Two",
+            "int_field": 2,
+            "float_field": 2.22,
+            "bool_field": false,
+            "date_field": "2000-02-02",
+            "datetime_field": "2000-02-02T02:02:02",
+            "time_field": "02:02:02",
+            "bytes_field": "b64:bbbbb",
+            "json_field": {
+                "key": "Two"
+            },
+            "enum_field": "EVEN"
+        },
+        {
+            "string_field": "Three",
+            "int_field": 3,
+            "float_field": 3.33,
+            "bool_field": true,
+            "date_field": "2000-03-03",
+            "datetime_field": "2000-03-03T03:03:03",
+            "time_field": "03:03:03",
+            "bytes_field": "b64:ccccc",
+            "json_field": {
+                "key": "three"
+            },
+            "enum_field": "ODD"
+        },
+        {
+            "string_field": "Four",
+            "int_field": 4,
+            "float_field": 4.44,
+            "bool_field": false,
+            "date_field": "2000-04-04",
+            "datetime_field": "2000-04-04T04:04:04",
+            "time_field": "04:04:04",
+            "bytes_field": "b64:ddddd",
+            "json_field": {
+                "key": "four"
+            },
+            "enum_field": "EVEN"
+        },
+        {
+            "string_field": "Five",
+            "int_field": 5,
+            "float_field": 5.55,
+            "bool_field": true,
+            "date_field": "2000-05-05",
+            "datetime_field": "2000-05-05T05:05:05",
+            "time_field": "05:05:05",
+            "bytes_field": "b64:eeeee",
+            "json_field": {
+                "key": "five"
+            },
+            "enum_field": "ODD"
+        }
+    ],
+    "SAMPLE_TABLE_3": [
+        {
+            "string_field": "One",
+            "int_field": 1,
+            "float_field": 1.11,
+            "bool_field": true,
+            "date_field": "2000-01-01",
+            "datetime_field": "2000-01-01T01:01:01",
+            "time_field": "01:01:01",
+            "bytes_field": "b64:aaaaa",
+            "json_field": {
+                "key": "One"
+            },
+            "enum_field": "ODD"
+        },
+        {
+            "string_field": "Two",
+            "int_field": 2,
+            "float_field": 2.22,
+            "bool_field": false,
+            "date_field": "2000-02-02",
+            "datetime_field": "2000-02-02T02:02:02",
+            "time_field": "02:02:02",
+            "bytes_field": "b64:bbbbb",
+            "json_field": {
+                "key": "Two"
+            },
+            "enum_field": "EVEN"
+        },
+        {
+            "string_field": "Three",
+            "int_field": 3,
+            "float_field": 3.33,
+            "bool_field": true,
+            "date_field": "2000-03-03",
+            "datetime_field": "2000-03-03T03:03:03",
+            "time_field": "03:03:03",
+            "bytes_field": "b64:ccccc",
+            "json_field": {
+                "key": "three"
+            },
+            "enum_field": "ODD"
+        },
+        {
+            "string_field": "Four",
+            "int_field": 4,
+            "float_field": 4.44,
+            "bool_field": false,
+            "date_field": "2000-04-04",
+            "datetime_field": "2000-04-04T04:04:04",
+            "time_field": "04:04:04",
+            "bytes_field": "b64:ddddd",
+            "json_field": {
+                "key": "four"
+            },
+            "enum_field": "EVEN"
+        },
+        {
+            "string_field": "Five",
+            "int_field": 5,
+            "float_field": 5.55,
+            "bool_field": true,
+            "date_field": "2000-05-05",
+            "datetime_field": "2000-05-05T05:05:05",
+            "time_field": "05:05:05",
+            "bytes_field": "b64:eeeee",
+            "json_field": {
+                "key": "five"
+            },
+            "enum_field": "ODD"
+        }
+    ]
+}
