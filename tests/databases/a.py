@@ -2,6 +2,8 @@
 Test Database A.
 
 Simple database with 1 table in it. This table has every data type supported by Alchemy QL.
+
+Database style: SQL Alchemy declarative ORM (mapped).
 """
 
 from datetime import date, datetime, time

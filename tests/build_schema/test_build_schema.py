@@ -7,6 +7,7 @@ from alchemyql.errors import ConfigurationError
 
 from ..databases.a import A_Table
 from ..databases.b import B_Table_1, B_Table_2, B_Table_3
+from ..databases.c import C_Table
 
 
 data_folder = os.path.join(os.path.dirname(__file__), "data")
@@ -115,6 +116,24 @@ def test_build_schema_b(cls: type[AlchemyQL]):
     engine.build_schema()
 
     expected = read_data_file("B.txt")
+
+    assert engine.get_schema() == expected
+
+
+@pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
+def test_build_schema_c(cls: type[AlchemyQL]):
+    engine = cls()
+
+    engine.register(
+        C_Table,
+        exclude_fields=["json_field", "bytes_field"],
+        filter_fields=["string_field", "int_field"],
+        order_fields=["string_field"],
+        pagination=True,
+    )
+    engine.build_schema()
+
+    expected = read_data_file("C.txt")
 
     assert engine.get_schema() == expected
 
