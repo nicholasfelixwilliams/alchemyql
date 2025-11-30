@@ -6,6 +6,15 @@
 
 ---
 
+<p align="left">
+  <img src="https://github.com/nicholasfelixwilliams/alchemyql/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI">
+  <img src="https://img.shields.io/pypi/v/alchemyql?color=%2334D058&label=pypi%20package" alt="Package version">
+  <img src="https://img.shields.io/pypi/pyversions/alchemyql.svg?color=%2334D058" alt="Supported Python versions">
+  <img src="https://img.shields.io/static/v1?label=code%20style&message=ruff&color=black">
+</p>
+
+---
+
 ### 🚀 Key Features
 Alchemy QL's key features include:
 
