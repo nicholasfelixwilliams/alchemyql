@@ -24,12 +24,16 @@ Alchemy QL's key features include:
     - Date types: date, datetime, time
     - Enums
     - JSON fields
+    - (Work in progress) relationships
 - **Query Options** - Currently supported query options:
     - Filtering 
     - Ordering
     - Pagination (using offset & limit)
 - **Sync & Async support** 
 - **Optimised SQL Queries** 
+- **ORM Support** - Currently supported sqlalchemy orm:
+    - Declarative base with mapping 
+    - Classic declarative base 
 
 ---
 

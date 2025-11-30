@@ -2,6 +2,8 @@
 Test Database B.
 
 Simple database with 3 tables in it. These tables has every data type supported by Alchemy QL but features no relationships between tables.
+
+Database style: SQL Alchemy declarative ORM (mapped).
 """
 
 from datetime import date, datetime, time

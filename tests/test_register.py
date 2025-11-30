@@ -5,6 +5,7 @@ import pytest
 
 from .databases.a import A_Table, Base as A_Base
 from .databases.b import B_Table_1, B_Table_2, Base as B_Base
+from .databases.c import C_Table
 
 
 @pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
@@ -43,3 +44,12 @@ def test_register_all_tables_b(cls: type[AlchemyQL]):
     engine.register_all_tables(B_Base)
 
     assert len(engine.tables) == 3
+
+
+@pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
+def test_register_tables_c(cls: type[AlchemyQL]):
+    engine = cls()
+
+    engine.register(C_Table)
+
+    assert len(engine.tables) == 1
