@@ -1,0 +1,40 @@
+name: Lint
+
+on: 
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  lint:
+    name: Lint / Static Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.14"
+
+      - name: Restore Cache
+        uses: actions/cache@v4
+        with:
+          path: .uv
+          key: lint-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+      
+      - name: Install Dependencies
+        run: uv sync --locked --all-extras
+      
+      - name: Check for syntax errors
+        run: uv run ruff check .
+
+      - name: Check code formatting
+        run: uv run ruff format --check --diff .
