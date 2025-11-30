@@ -16,7 +16,7 @@ wheels = [
 
 [[package]]
 name = "alchemyql"
-version = "0.0.1"
+version = "0.0.1a1"
 source = { editable = "." }
 dependencies = [
     { name = "graphql-core" },
@@ -36,8 +36,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "graphql-core", specifier = ">=3.2.7" },
-    { name = "sqlalchemy", specifier = ">=2.0.44" },
+    { name = "graphql-core", specifier = ">=3.2.4" },
+    { name = "sqlalchemy", specifier = ">=2.0.35" },
 ]
 
 [package.metadata.requires-dev]
