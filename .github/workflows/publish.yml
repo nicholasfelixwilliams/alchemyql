@@ -48,6 +48,11 @@ jobs:
       url: https://pypi.org/project/alchemyql/
 
     steps:
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.14"
+          
       - name: Retrieve distributions
         uses: actions/download-artifact@v6
         with:
