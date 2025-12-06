@@ -1,25 +1,24 @@
 from datetime import date, datetime, time
 from enum import Enum
+from typing import Callable, cast
+
 from graphql import (
     GraphQLEnumType,
-    GraphQLInputObjectType,
     GraphQLInputField,
+    GraphQLInputObjectType,
     GraphQLInputType,
     GraphQLList,
 )
-from typing import cast
 
-from .errors import ConfigurationError
 from .scalars import (
+    BoolScalar,
     DateScalar,
     DateTimeScalar,
-    TimeScalar,
-    IntScalar,
     FloatScalar,
-    BoolScalar,
+    IntScalar,
     StringScalar,
+    TimeScalar,
 )
-
 
 IntFilter = cast(
     GraphQLInputObjectType,
@@ -142,25 +141,13 @@ def build_enum_filter(cls: GraphQLEnumType) -> GraphQLInputObjectType:
     )
 
 
-def convert_to_filter(column, field: GraphQLInputType) -> GraphQLInputObjectType:
-    py_type = column.type.python_type
-
-    if py_type is int:
-        return IntFilter
-    elif py_type is str:
-        return StringFilter
-    elif py_type is bool:
-        return BoolFilter
-    elif py_type is float:
-        return FloatFilter
-    elif issubclass(py_type, Enum):
-        return build_enum_filter(cast(GraphQLEnumType, field))
-    elif py_type is datetime:
-        return DateTimeFilter
-    elif py_type is date:
-        return DateFilter
-    elif py_type is time:
-        return TimeFilter
-    raise ConfigurationError(
-        "Filtering based on data types other than (int, str, bool, float, Enums, datetime, date, time) is not currently supported"
-    )
+FILTERS: dict[type, Callable[[GraphQLInputType], GraphQLInputObjectType]] = {
+    int: lambda _: IntFilter,
+    str: lambda _: StringFilter,
+    bool: lambda _: BoolFilter,
+    float: lambda _: FloatFilter,
+    Enum: lambda field: build_enum_filter(cast(GraphQLEnumType, field)),
+    datetime: lambda _: DateTimeFilter,
+    date: lambda _: DateFilter,
+    time: lambda _: TimeFilter,
+}

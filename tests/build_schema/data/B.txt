@@ -4,6 +4,7 @@ type Query {
   sample_table_3s(filter: sample_table_3_filter): [sample_table_3]
 }
 
+"""SAMPLE_TABLE_1"""
 type sample_table_1 {
   string_field: String!
   int_field: Int!
@@ -30,17 +31,7 @@ enum SampleEnum {
 }
 
 input sample_table_1_filter {
-  string_field: StringFilter
   int_field: IntFilter
-}
-
-input StringFilter {
-  eq: String
-  ne: String
-  contains: String
-  startswith: String
-  endswith: String
-  in: [String]
 }
 
 input IntFilter {
@@ -53,6 +44,7 @@ input IntFilter {
   in: [Int]
 }
 
+"""SAMPLE_TABLE_2"""
 type sample_table_2 {
   string_field: String!
   int_field: Int!
@@ -72,6 +64,16 @@ input sample_table_2_filter {
   int_field: IntFilter
 }
 
+input StringFilter {
+  eq: String
+  ne: String
+  contains: String
+  startswith: String
+  endswith: String
+  in: [String]
+}
+
+"""SAMPLE_TABLE_3"""
 type sample_table_3 {
   string_field: String!
 }

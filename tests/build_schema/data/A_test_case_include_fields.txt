@@ -2,6 +2,7 @@ type Query {
   sample_tables: [sample_table]
 }
 
+"""SAMPLE_TABLE"""
 type sample_table {
   string_field: String!
   enum_field: SampleEnum!

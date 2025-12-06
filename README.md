@@ -1,8 +1,10 @@
-<p>
-  <img src="https://raw.githubusercontent.com/nicholasfelixwilliams/alchemyql/main/docs/logo.png" width="200" style="padding: 10px" align="left" />
-  <h3 style="font-size: 3.5em; margin: 0;">Alchemy QL</h3>
-  <em>Lightweight GraphQL engine powered by SQLAlchemy</em>
-</p>
+<div style="display: flex; align-items: center; margin-bottom: 2em;">
+  <img src="https://raw.githubusercontent.com/nicholasfelixwilliams/alchemyql/main/docs/logo.png" width="200" style="margin-right: 20px;" />
+  <div>
+    <h3 style="font-size: 3.0rem; margin: 0;">Alchemy QL</h3>
+    <em>Lightweight GraphQL engine powered by SQLAlchemy</em>
+  </div>
+</div>
 
 ---
 

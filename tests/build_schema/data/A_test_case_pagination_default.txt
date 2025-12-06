@@ -2,6 +2,7 @@ type Query {
   sample_tables(limit: Int = 1000, offset: Int = 0): [sample_table]
 }
 
+"""SAMPLE_TABLE"""
 type sample_table {
   string_field: String!
   int_field: Int!

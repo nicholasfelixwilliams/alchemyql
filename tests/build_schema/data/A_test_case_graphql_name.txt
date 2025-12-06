@@ -2,6 +2,7 @@ type Query {
   other_names: [other_name]
 }
 
+"""SAMPLE_TABLE"""
 type other_name {
   string_field: String!
   int_field: Int!

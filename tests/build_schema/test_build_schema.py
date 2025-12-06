@@ -1,14 +1,15 @@
-from alchemyql import AlchemyQLSync, AlchemyQLAsync
-from alchemyql.engine import AlchemyQL
 import os
+
 import pytest
 
+from alchemyql import AlchemyQLAsync, AlchemyQLSync
+from alchemyql.engine import AlchemyQL
 from alchemyql.errors import ConfigurationError
 
 from ..databases.a import A_Table
 from ..databases.b import B_Table_1, B_Table_2, B_Table_3
 from ..databases.c import C_Table
-
+from ..databases.d import D_Table_1, D_Table_2
 
 data_folder = os.path.join(os.path.dirname(__file__), "data")
 
@@ -139,21 +140,35 @@ def test_build_schema_c(cls: type[AlchemyQL]):
 
 
 @pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
-def test_register_invalid_column_ref(cls: type[AlchemyQL]):
+def test_build_schema_d(cls: type[AlchemyQL]):
     engine = cls()
 
-    engine.register(A_Table, include_fields=["does-not-exist"])
+    engine.register(
+        D_Table_1,
+        include_fields=["int_field", "string_field"],
+        relationships=["t2_rel"],
+    )
+    engine.register(
+        D_Table_2,
+        include_fields=["int_field", "string_field"],
+        relationships=["t1_rel"],
+    )
+    engine.build_schema()
 
-    with pytest.raises(ConfigurationError):
-        engine.build_schema()
+    expected = read_data_file("D.txt")
+
+    assert engine.get_schema() == expected
 
 
 @pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
-@pytest.mark.parametrize("field", ["bytes_field", "json_field"])
-def test_register_invalid_filter_column(cls: type[AlchemyQL], field: str):
+def test_build_with_invalid_relationships(cls: type[AlchemyQL]):
     engine = cls()
 
-    engine.register(A_Table, filter_fields=[field])
+    engine.register(
+        D_Table_1,
+        include_fields=["int_field", "string_field"],
+        relationships=["t2_rel"],
+    )
 
     with pytest.raises(ConfigurationError):
         engine.build_schema()
