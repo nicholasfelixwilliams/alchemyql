@@ -9,7 +9,7 @@ from alchemyql.errors import ConfigurationError
 from ..databases.a import A_Table
 from ..databases.b import B_Table_1, B_Table_2, B_Table_3
 from ..databases.c import C_Table
-from ..databases.d import D_Table_1, D_Table_2
+from ..databases.d import D_Table_1, D_Table_2, D_Table_3
 
 data_folder = os.path.join(os.path.dirname(__file__), "data")
 
@@ -140,7 +140,7 @@ def test_build_schema_c(cls: type[AlchemyQL]):
 
 
 @pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
-def test_build_schema_d(cls: type[AlchemyQL]):
+def test_build_schema_d_one_to_one(cls: type[AlchemyQL]):
     engine = cls()
 
     engine.register(
@@ -155,7 +155,80 @@ def test_build_schema_d(cls: type[AlchemyQL]):
     )
     engine.build_schema()
 
-    expected = read_data_file("D.txt")
+    expected = read_data_file("D_test_case_1_to_1.txt")
+
+    assert engine.get_schema() == expected
+
+
+@pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
+def test_build_schema_d_one_to_many(cls: type[AlchemyQL]):
+    engine = cls()
+
+    engine.register(
+        D_Table_1,
+        include_fields=["int_field", "string_field"],
+        relationships=["t3_rel"],
+    )
+    engine.register(
+        D_Table_3,
+        include_fields=["int_field", "string_field"],
+        relationships=["t1_rel"],
+    )
+    engine.build_schema()
+
+    expected = read_data_file("D_test_case_one_to_many.txt")
+
+    assert engine.get_schema() == expected
+
+
+@pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
+def test_build_schema_d_many_to_many(cls: type[AlchemyQL]):
+    engine = cls()
+
+    engine.register(
+        D_Table_2,
+        include_fields=["int_field", "string_field"],
+        relationships=["t3_rel"],
+    )
+    engine.register(
+        D_Table_3,
+        include_fields=["int_field", "string_field"],
+        relationships=["t2_rel"],
+    )
+    engine.build_schema()
+
+    expected = read_data_file("D_test_case_many_to_many.txt")
+
+    assert engine.get_schema() == expected
+
+
+@pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
+def test_build_schema_d_combination(cls: type[AlchemyQL]):
+    engine = cls()
+
+    engine.register(
+        D_Table_1,
+        include_fields=["int_field", "string_field"],
+        filter_fields=["int_field", "string_field"],
+        order_fields=["int_field"],
+        relationships=["t2_rel", "t3_rel"],
+    )
+    engine.register(
+        D_Table_2,
+        include_fields=["int_field", "string_field"],
+        filter_fields=["int_field", "string_field"],
+        order_fields=["int_field"],
+        relationships=["t1_rel", "t3_rel"],
+    )
+    engine.register(
+        D_Table_3,
+        include_fields=["int_field", "string_field"],
+        filter_fields=["int_field", "string_field"],
+        relationships=["t1_rel", "t2_rel"],
+    )
+    engine.build_schema()
+
+    expected = read_data_file("D_test_case_combination.txt")
 
     assert engine.get_schema() == expected
 
