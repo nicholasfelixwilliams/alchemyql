@@ -52,7 +52,6 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.14"
-          scache: false
           
       - name: Retrieve distributions
         uses: actions/download-artifact@v6
