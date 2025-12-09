@@ -1,17 +1,19 @@
-from contextlib import asynccontextmanager, contextmanager
-from datetime import datetime, date, time
 import json
 import os
+from contextlib import asynccontextmanager, contextmanager
+from datetime import date, datetime, time
 from pathlib import Path
+
 import pytest
 from sqlalchemy import create_engine, insert
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from .databases.a import Base as A_Base
 from .databases.b import Base as B_Base
+from .databases.d import Base as D_Base
 
-TEST_DATABASES = {"A": A_Base, "B": B_Base}
+TEST_DATABASES = {"A": A_Base, "B": B_Base, "D": D_Base}
 
 
 def convert_values(row, model_cls):

@@ -1,18 +1,18 @@
 import base64
 from datetime import date, datetime, time
 from enum import Enum
+from typing import cast
+
 from graphql import (
     GraphQLBoolean,
     GraphQLEnumType,
     GraphQLEnumValue,
     GraphQLFloat,
-    GraphQLScalarType,
     GraphQLInputType,
     GraphQLInt,
+    GraphQLScalarType,
     GraphQLString,
 )
-from typing import cast
-
 
 IntScalar = cast(GraphQLInputType, GraphQLInt)
 FloatScalar = cast(GraphQLInputType, GraphQLFloat)

@@ -9,19 +9,24 @@ Database with 3 tables in it. These tables features relationships between each o
 Database style: SQL Alchemy declarative ORM (mapped).
 """
 
-from sqlalchemy import Column, ForeignKey, Table
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase): ...
 
 
-t2_t3_link = Table(
-    "T2_T3_LINK",
-    Base.metadata,
-    Column("t2_id", ForeignKey("SAMPLE_TABLE_2.int_field"), primary_key=True),
-    Column("t3_id", ForeignKey("SAMPLE_TABLE_3.int_field"), primary_key=True),
-)
+class T2_T3_Link(Base):
+    __tablename__ = "T2_T3_LINK"
+
+    t2_int_field: Mapped[int] = mapped_column(
+        ForeignKey("SAMPLE_TABLE_2.int_field"),
+        primary_key=True,
+    )
+    t3_int_field: Mapped[int] = mapped_column(
+        ForeignKey("SAMPLE_TABLE_3.int_field"),
+        primary_key=True,
+    )
 
 
 class D_Table_2(Base):
@@ -35,7 +40,7 @@ class D_Table_2(Base):
 
     # Many-to-many to T3
     t3_rel: Mapped[list["D_Table_3"]] = relationship(
-        secondary=t2_t3_link,
+        secondary="T2_T3_LINK",
         back_populates="t2_rel",
     )
 
@@ -76,6 +81,6 @@ class D_Table_3(Base):
 
     # Many-to-many to T2
     t2_rel: Mapped[list[D_Table_2]] = relationship(
-        secondary=t2_t3_link,
+        secondary="T2_T3_LINK",
         back_populates="t3_rel",
     )

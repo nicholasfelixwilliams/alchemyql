@@ -26,7 +26,7 @@ Alchemy QL's key features include:
     - Date types: date, datetime, time
     - Enums
     - JSON fields
-    - (Work in progress) relationships
+    - Relationships
 - **Query Options** - Currently supported query options:
     - Filtering 
     - Ordering
@@ -119,7 +119,8 @@ res = await async_engine.execute_query(query=query, db_session=db)
 | graphql_name | str | None | Customise the graphql type name (defaults to sql tablename) | 
 | description | str | None | Customise the graphql type descripton | 
 | include_fields | list[str] | None | Allow only specific fields to be exposed | 
-| exclude_fields | list[str] | [] | Block specific fields from being exposed | 
+| exclude_fields | list[str] | [] | Block specific fields from being exposed |
+| relationships | list[str] | [] | Relationships to be exposed (target table must be registered aswell) |
 | filter_fields | list[str] | [] | Allow filtering for specific fields | 
 | order_fields | list[str] | [] | Allow ordering for specific fields | 
 | default_order | dict[str, Order] | None | Default order to apply to queries | 

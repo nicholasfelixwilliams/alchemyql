@@ -1,0 +1,132 @@
+{
+    "SAMPLE_TABLE_1": [
+        {
+            "string_field": "One",
+            "int_field": 1,
+            "t2_int_field": 1 
+        },
+        {
+            "string_field": "Two",
+            "int_field": 2,
+            "t2_int_field": 2 
+        },
+        {
+            "string_field": "Three",
+            "int_field": 3,
+            "t2_int_field": 3 
+        },
+        {
+            "string_field": "Four",
+            "int_field": 4,
+            "t2_int_field": 4 
+        },
+        {
+            "string_field": "Five",
+            "int_field": 5,
+            "t2_int_field": 5
+        }
+    ],
+    "SAMPLE_TABLE_2": [
+        {
+            "string_field": "One",
+            "int_field": 1
+        },
+        {
+            "string_field": "Two",
+            "int_field": 2
+        },
+        {
+            "string_field": "Three",
+            "int_field": 3
+        },
+        {
+            "string_field": "Four",
+            "int_field": 4
+        },
+        {
+            "string_field": "Five",
+            "int_field": 5
+        }
+    ],
+    "SAMPLE_TABLE_3": [
+        {
+            "string_field": "One",
+            "int_field": 1,
+            "t1_int_field": 1 
+        },
+        {
+            "string_field": "Two",
+            "int_field": 2,
+            "t1_int_field": 2 
+        },
+        {
+            "string_field": "Three",
+            "int_field": 3,
+            "t1_int_field": 1 
+        },
+        {
+            "string_field": "Four",
+            "int_field": 4,
+            "t1_int_field": 2
+        },
+        {
+            "string_field": "Five",
+            "int_field": 5,
+            "t1_int_field": 1 
+        }
+    ], 
+    "T2_T3_LINK": [
+        {
+            "t2_int_field": 1, 
+            "t3_int_field": 1
+        },
+        {
+            "t2_int_field": 1, 
+            "t3_int_field": 3
+        },
+        {
+            "t2_int_field": 1, 
+            "t3_int_field": 5
+        },
+        {
+            "t2_int_field": 2, 
+            "t3_int_field": 2
+        },
+        {
+            "t2_int_field": 2, 
+            "t3_int_field": 4
+        },
+        {
+            "t2_int_field": 3, 
+            "t3_int_field": 1
+        },
+        {
+            "t2_int_field": 3, 
+            "t3_int_field": 3
+        },
+        {
+            "t2_int_field": 3, 
+            "t3_int_field": 5
+        },
+        {
+            "t2_int_field": 4, 
+            "t3_int_field": 2
+        },
+        {
+            "t2_int_field": 4, 
+            "t3_int_field": 4
+        },
+        {
+            "t2_int_field": 5, 
+            "t3_int_field": 1
+        },
+        {
+            "t2_int_field": 5, 
+            "t3_int_field": 3
+        },
+        {
+            "t2_int_field": 5, 
+            "t3_int_field": 5
+        }
+    ]
+}
