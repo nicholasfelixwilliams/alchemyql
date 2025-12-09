@@ -1,14 +1,16 @@
+import logging
+import time
 from abc import ABC
 from typing import Any
+
 from graphql import ExecutionResult, GraphQLSchema, graphql, graphql_sync
 from graphql.utilities import print_schema
-import logging
-from sqlalchemy.orm import Session, DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncSession
-import time
+from sqlalchemy.orm import DeclarativeBase, Session
 
 from .errors import ConfigurationError
-from .models import Table, Order
+from .models import Order, Table
+from .register import register_transform
 from .schema import build_gql_schema
 
 log = logging.getLogger("alchemyql")
@@ -36,6 +38,7 @@ class AlchemyQL(ABC):
         description: str | None = None,
         include_fields: list[str] | None = None,
         exclude_fields: list[str] | None = None,
+        relationships: list[str] | None = None,
         filter_fields: list[str] | None = None,
         order_fields: list[str] | None = None,
         default_order: dict[str, Order] | None = None,
@@ -51,6 +54,7 @@ class AlchemyQL(ABC):
          - description - Description to give GraphQL type
          - include_fields - list of column names to expose
          - exclude_fields - list of column names not to expose
+         - relationships - list of relationship names to expose (target table must also be registered before schema is built)
          - filter_fields - list of column names to allow filtering by
          - order_fields - list of column names to allow ordering by
          - default_order - column -> order map to be applied by default
@@ -59,18 +63,19 @@ class AlchemyQL(ABC):
          - max_limit - max limit to allow
         """
 
-        table = Table(
-            sqlalchemy_cls=sqlalchemy_cls,
-            graphql_name=(graphql_name or sqlalchemy_cls.__tablename__).lower(),
-            description=description,
-            include_fields=include_fields,
-            exclude_fields=exclude_fields or [],
-            filter_fields=filter_fields or [],
-            order_fields=order_fields or [],
-            default_order=default_order,
-            pagination=pagination,
-            default_limit=default_limit,
-            max_limit=max_limit,
+        table = register_transform(
+            sqlalchemy_cls,
+            graphql_name,
+            description,
+            include_fields,
+            exclude_fields,
+            relationships,
+            filter_fields,
+            order_fields,
+            default_order,
+            pagination,
+            default_limit,
+            max_limit,
         )
 
         # Checks the table is not already registerd

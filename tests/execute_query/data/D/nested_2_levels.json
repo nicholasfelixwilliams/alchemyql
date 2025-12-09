@@ -1,0 +1,53 @@
+{
+  "query": "query { sample_table_1s (order : {int_field: ASC }) { int_field t2_rel { int_field t1_rel { int_field } } } }",
+  "variables": null,
+  "expected": {
+    "sample_table_1s": [
+      {
+        "int_field": 1,
+        "t2_rel": {
+          "int_field": 1, 
+          "t1_rel": {
+            "int_field": 1
+          }
+        }
+      },
+      {
+        "int_field": 2,
+        "t2_rel": {
+          "int_field": 2, 
+          "t1_rel": {
+            "int_field": 2
+          }
+        }
+      },
+      {
+        "int_field": 3,
+        "t2_rel": {
+          "int_field": 3, 
+          "t1_rel": {
+            "int_field": 3
+          }
+        }
+      },
+      {
+        "int_field": 4,
+        "t2_rel": {
+          "int_field": 4, 
+          "t1_rel": {
+            "int_field": 4
+          }
+        }
+      },
+      {
+        "int_field": 5,
+        "t2_rel": {
+          "int_field": 5, 
+          "t1_rel": {
+            "int_field": 5
+          }
+        }
+      }
+    ]
+  }
+}

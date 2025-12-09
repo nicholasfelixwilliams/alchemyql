@@ -4,80 +4,136 @@ from graphql import (
     GraphQLInputField,
     GraphQLInputObjectType,
     GraphQLList,
+    GraphQLNonNull,
     GraphQLObjectType,
     GraphQLSchema,
-    GraphQLNonNull,
 )
-from sqlalchemy import inspect
 
 from .errors import ConfigurationError
-from .filters import convert_to_filter
+from .filters import FILTERS
 from .models import Table
 from .resolver import build_async_resolver, build_sync_resolver
-from .scalars import convert_to_scalar, IntScalar, OrderingEnumScalar
+from .scalars import IntScalar, OrderingEnumScalar, convert_to_scalar
 
 
-def _validate_table(table: Table, inspected):
+def _validate_relationships(tables: list[Table], class_to_gql: dict):
     """
-    Perform validations on the table registered. Validations include:
-     - Checking all fields exist
-     - Checking all types are supported
-
-    Any failed validations causes an exception to be thrown.
+    Validate that the relationships target tables which are also registered.
     """
-    # Check all fields exist
-    for field in (
-        set(table.include_fields or [])
-        | set(table.exclude_fields)
-        | set(table.filter_fields)
-        | set(table.order_fields)
-        | (set(table.default_order.keys()) if table.default_order else set())
-    ):
-        if field not in inspected.columns:
-            raise ConfigurationError(
-                f"Field {field} does not exist in {table.graphql_name}!"
-            )
+    for table in tables:
+        for rel in table.inspected.relationships:
+            if rel.key not in table.relationships:
+                continue
+
+            if rel.mapper.class_ not in class_to_gql:
+                raise ConfigurationError(
+                    f"Relationship target table has not been registered (relationship={rel})"
+                )
+
+
+def _build_fields(table: Table, class_to_gql: dict, scalar_map: dict):
+    """
+    Build the fields for a specified table. This includes columns and relationships.
+    """
+    fields = {}
+
+    # Table columns
+    for col in table.inspected.columns:
+        if col.key not in table.fields:
+            continue
+
+        # reuse scalar if already built
+        py_type = col.type.python_type
+        if py_type in scalar_map:
+            gql_type = scalar_map[py_type]
+        else:
+            gql_type = convert_to_scalar(col)
+            scalar_map[py_type] = gql_type
+
+        if col.nullable:
+            fields[col.key] = GraphQLField(gql_type)  # type: ignore
+        else:
+            fields[col.key] = GraphQLField(GraphQLNonNull(gql_type))  # type: ignore
+
+    # Table relationships
+    for rel in table.inspected.relationships:
+        if rel.key not in table.relationships:
+            continue
+
+        target_gql = class_to_gql[rel.mapper.class_]
+        gql_rel_type = GraphQLList(target_gql) if rel.uselist else target_gql
+        fields[rel.key] = GraphQLField(gql_rel_type)
+
+    return fields
 
 
 def build_gql_schema(tables: list[Table], is_async: bool) -> GraphQLSchema:
-    # Mapping of types to scalars
-    scalar_map = {}
+    """
+    Construct the graphql schema using the registered tables.
+    """
+    scalar_map: dict[type, object] = {}
+    filter_map: dict[type, object] = {}
 
-    # Step 1 - Build list of table schemas
-    table_schemas: dict[str, GraphQLField] = {}
+    # Step 1 — create empty GraphQLObjectType shells
+    gql_objects = {
+        t.graphql_name: GraphQLObjectType(
+            name=t.graphql_name,
+            description=t.description,
+            fields=lambda: {},
+        )
+        for t in tables
+    }
+    class_to_gql = {
+        table.sqlalchemy_cls: gql_objects[table.graphql_name] for table in tables
+    }
+    _validate_relationships(tables, class_to_gql)
+
+    # Step 2 — populate fields (columns + relationships)
+    for table in tables:
+        gql_objects[table.graphql_name]._fields = lambda t=table: _build_fields(  # type: ignore
+            t, class_to_gql, scalar_map
+        )
+
+    # Step 3 — build query arguments with filters, pagination, ordering
+    query_fields = {}
 
     for table in tables:
-        inspected = inspect(table.sqlalchemy_cls)
+        base_object = gql_objects[table.graphql_name]
 
-        _validate_table(table, inspected)
+        filter_fields = {}
+        for col in table.inspected.columns:
+            if col.key not in table.filter_fields:
+                continue
 
-        fields = {}
-        query_fields = {}
+            py_type = col.type.python_type
 
-        for col in inspected.columns:
-            if col.type.python_type in scalar_map:
-                ql_type = scalar_map[col.type.python_type]
+            # reuse filter input if already built
+            if py_type in filter_map:
+                gql_filter = filter_map[py_type]
             else:
-                ql_type = convert_to_scalar(col)
-                scalar_map[col.type.python_type] = ql_type
-
-            if col.key not in table.exclude_fields and (
-                not table.include_fields or col.key in table.include_fields
-            ):
-                if col.nullable:
-                    fields[col.key] = GraphQLField(ql_type)  # type: ignore
+                # pick FILTERS builder
+                if py_type in FILTERS:
+                    key = py_type
                 else:
-                    fields[col.key] = GraphQLField(GraphQLNonNull(ql_type))  # type: ignore
+                    key = next(it for it in FILTERS.keys() if issubclass(py_type, it))
 
-            if col.key in table.filter_fields:
-                query_fields[col.key] = convert_to_filter(col, ql_type)
+                gql_type = scalar_map.get(py_type)
+                if gql_type is None:
+                    gql_type = convert_to_scalar(col)
+                    scalar_map[py_type] = gql_type
 
+                gql_filter = FILTERS[key](gql_type)  # type: ignore
+                filter_map[py_type] = gql_filter
+
+            filter_fields[col.key] = gql_filter
+
+        # Build query arguments
         args = {}
-
-        if query_fields:
+        if filter_fields:
             args["filter"] = GraphQLArgument(
                 GraphQLInputObjectType(
-                    name=f"{table.graphql_name}_filter", fields=lambda: query_fields
+                    name=f"{table.graphql_name}_filter",
+                    fields=lambda f=filter_fields: f,
                 )  # type: ignore
             )
 
@@ -88,24 +144,26 @@ def build_gql_schema(tables: list[Table], is_async: bool) -> GraphQLSchema:
             args["offset"] = GraphQLArgument(IntScalar, default_value=0)
 
         if table.order_fields:
-            f = {it: GraphQLInputField(OrderingEnumScalar) for it in table.order_fields}
+            order_fields = {
+                f: GraphQLInputField(OrderingEnumScalar) for f in table.order_fields
+            }
             args["order"] = GraphQLArgument(
                 GraphQLInputObjectType(
-                    name=f"{table.graphql_name}_order", fields=lambda: f
+                    name=f"{table.graphql_name}_order", fields=lambda o=order_fields: o
                 )  # type: ignore
             )
 
-        ql_table = GraphQLObjectType(
-            name=table.graphql_name, description=table.description, fields=fields
+        # Resolver
+        resolver = (
+            build_async_resolver(table) if is_async else build_sync_resolver(table)
         )
 
-        table_schemas[table.graphql_name + "s"] = GraphQLField(
-            GraphQLList(ql_table),
-            resolve=build_async_resolver(table)
-            if is_async
-            else build_sync_resolver(table),
-            args=args,
+        # Final query field
+        query_fields[table.graphql_name + "s"] = GraphQLField(
+            GraphQLList(base_object), args=args, resolve=resolver
         )
 
-    query = GraphQLObjectType(name="Query", fields=lambda: table_schemas)
+    # Step 4 — Build root query
+    query = GraphQLObjectType(name="Query", fields=lambda q=query_fields: q)
+
     return GraphQLSchema(query=query)  # type: ignore

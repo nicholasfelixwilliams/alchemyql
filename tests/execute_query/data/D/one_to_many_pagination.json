@@ -1,0 +1,23 @@
+{
+  "query": "query { sample_table_1s (order : {int_field: ASC } limit: 2 offset: 1) { int_field t3_rel { int_field } } }",
+  "variables": null,
+  "expected": {
+    "sample_table_1s": [
+      {
+        "int_field": 2,
+        "t3_rel": [
+          {
+            "int_field": 2
+          },
+          {
+            "int_field": 4
+          }
+        ]
+      },
+      {
+        "int_field": 3,
+        "t3_rel": []
+      }
+    ]
+  }
+}

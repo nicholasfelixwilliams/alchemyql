@@ -1,8 +1,10 @@
-<p>
-  <img src="https://raw.githubusercontent.com/nicholasfelixwilliams/alchemyql/main/docs/logo.png" width="200" style="padding: 10px" align="left" />
-  <h3 style="font-size: 3.5em; margin: 0;">Alchemy QL</h3>
-  <em>Lightweight GraphQL engine powered by SQLAlchemy</em>
-</p>
+<div style="display: flex; align-items: center; margin-bottom: 2em;">
+  <img src="https://raw.githubusercontent.com/nicholasfelixwilliams/alchemyql/main/docs/logo.png" width="200" style="margin-right: 20px;" />
+  <div>
+    <h3 style="font-size: 3.0rem; margin: 0;">Alchemy QL</h3>
+    <em>Lightweight GraphQL engine powered by SQLAlchemy</em>
+  </div>
+</div>
 
 ---
 
@@ -24,7 +26,7 @@ Alchemy QL's key features include:
     - Date types: date, datetime, time
     - Enums
     - JSON fields
-    - (Work in progress) relationships
+    - Relationships
 - **Query Options** - Currently supported query options:
     - Filtering 
     - Ordering
@@ -117,7 +119,8 @@ res = await async_engine.execute_query(query=query, db_session=db)
 | graphql_name | str | None | Customise the graphql type name (defaults to sql tablename) | 
 | description | str | None | Customise the graphql type descripton | 
 | include_fields | list[str] | None | Allow only specific fields to be exposed | 
-| exclude_fields | list[str] | [] | Block specific fields from being exposed | 
+| exclude_fields | list[str] | [] | Block specific fields from being exposed |
+| relationships | list[str] | [] | Relationships to be exposed (target table must be registered aswell) |
 | filter_fields | list[str] | [] | Allow filtering for specific fields | 
 | order_fields | list[str] | [] | Allow ordering for specific fields | 
 | default_order | dict[str, Order] | None | Default order to apply to queries | 

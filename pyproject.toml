@@ -11,10 +11,15 @@ license-files = ["LICENSE"]
 keywords = ["graphql", "sqlalchemy", "database", "graphql-engine"]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
+    "Typing :: Typed",
 ]
 homepage = "https://github.com/nicholasfelixwilliams/alchemyql"
 repository = "https://github.com/nicholasfelixwilliams/alchemyql"
+Issues = "https://github.com/nicholasfelixwilliams/alchemyql/issues"
 requires-python = ">=3.12"
 dependencies = [
     "graphql-core>=3.2.4",

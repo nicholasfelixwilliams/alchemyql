@@ -1,14 +1,16 @@
-from alchemyql import AlchemyQLSync, AlchemyQLAsync
-from alchemyql.engine import AlchemyQL
 import json
 from pathlib import Path
-import pytest
 from typing import TypeVar
 
+import pytest
+
+from alchemyql import AlchemyQLAsync, AlchemyQLSync
+from alchemyql.engine import AlchemyQL
 from alchemyql.models import Order
 
 from ..databases.a import A_Table
 from ..databases.b import B_Table_1, B_Table_2, B_Table_3
+from ..databases.d import D_Table_1, D_Table_2, D_Table_3
 
 
 def load_test_cases():
@@ -69,6 +71,28 @@ def build_ql_engine(engine_cls: type[T], db: str) -> T:
             engine.register(B_Table_1, **params)
             engine.register(B_Table_2, **params)
             engine.register(B_Table_3, **params)
+        case "D":
+            engine.register(
+                D_Table_1,
+                include_fields=["int_field", "string_field"],
+                relationships=["t2_rel", "t3_rel"],
+                order_fields=["int_field"],
+                pagination=True,
+            )
+            engine.register(
+                D_Table_2,
+                include_fields=["int_field", "string_field"],
+                relationships=["t1_rel", "t3_rel"],
+                order_fields=["int_field"],
+                pagination=True,
+            )
+            engine.register(
+                D_Table_3,
+                include_fields=["int_field", "string_field"],
+                relationships=["t1_rel", "t2_rel"],
+                order_fields=["int_field"],
+                pagination=True,
+            )
 
     engine.build_schema()
     return engine
