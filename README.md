@@ -84,7 +84,6 @@ engine.register(
 )
 ```
 
-
 **Step 3** - Build your schema:
 
 ```py
@@ -107,6 +106,12 @@ res = await async_engine.execute_query(query=query, db_session=db)
 ---
 
 ### 📘 Supported Options
+
+**Engine Creation:**
+
+| Key   | Type  | Default | Description |
+| ----- | ----- | ----- | ----- |
+| max_query_depth | int | None | The maximum depth allowed for nested queries | 
 
 **Registering Table:**
 
