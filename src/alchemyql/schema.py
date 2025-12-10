@@ -159,9 +159,10 @@ def build_gql_schema(tables: list[Table], is_async: bool) -> GraphQLSchema:
         )
 
         # Final query field
-        query_fields[table.graphql_name + "s"] = GraphQLField(
-            GraphQLList(base_object), args=args, resolve=resolver
-        )
+        if table.query:
+            query_fields[table.graphql_name + "s"] = GraphQLField(
+                GraphQLList(base_object), args=args, resolve=resolver
+            )
 
     # Step 4 — Build root query
     query = GraphQLObjectType(name="Query", fields=lambda q=query_fields: q)

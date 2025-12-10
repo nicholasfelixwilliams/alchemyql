@@ -40,6 +40,7 @@ class AlchemyQL(ABC):
         sqlalchemy_cls,
         graphql_name: str | None = None,
         description: str | None = None,
+        query: bool = True,
         include_fields: list[str] | None = None,
         exclude_fields: list[str] | None = None,
         relationships: list[str] | None = None,
@@ -56,6 +57,7 @@ class AlchemyQL(ABC):
         Options:
          - graphql_name - Name to give GraphQL type (defaults to tablename)
          - description - Description to give GraphQL type
+         - query - whether to support direct querying of table
          - include_fields - list of column names to expose
          - exclude_fields - list of column names not to expose
          - relationships - list of relationship names to expose (target table must also be registered before schema is built)
@@ -71,6 +73,7 @@ class AlchemyQL(ABC):
             sqlalchemy_cls,
             graphql_name,
             description,
+            query,
             include_fields,
             exclude_fields,
             relationships,
