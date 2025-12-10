@@ -23,13 +23,17 @@ class AlchemyQL(ABC):
     An Engine supports adding tables, building Graph QL schema and executing queries.
     """
 
-    def __init__(self):
+    def __init__(self, max_query_depth: int | None = None):
         """
         Initialize Alchemy QL Engine.
+
+        Options:
+            - max_query_depth - Maximum number of nested relationships that can be queries in 1 query
         """
         self.schema: GraphQLSchema | None = None
         self.tables: list[Table] = []
         self.is_async: bool
+        self.max_query_depth = max_query_depth
 
     def register(
         self,
@@ -153,7 +157,10 @@ class AlchemyQLSync(AlchemyQL):
             query,
             variable_values=variables,
             operation_name=operation,
-            context_value={"session": db_session},
+            context_value={
+                "session": db_session,
+                "max_query_depth": self.max_query_depth,
+            },
         )
 
         log.debug(
@@ -191,7 +198,10 @@ class AlchemyQLAsync(AlchemyQL):
             query,
             variable_values=variables,
             operation_name=operation,
-            context_value={"session": db_session},
+            context_value={
+                "session": db_session,
+                "max_query_depth": self.max_query_depth,
+            },
         )
 
         log.debug(

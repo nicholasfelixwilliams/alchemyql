@@ -157,3 +157,37 @@ async def test_async_invalid_queries(db_async, query):
         res = await engine.execute_query(query=query, variables=None, db_session=db)
 
         assert res.errors is not None
+
+
+def test_query_depth_exceeded_sync(db_sync):
+    engine = AlchemyQLSync(max_query_depth=2)
+    engine.register(D_Table_1, relationships=["t2_rel"])
+    engine.register(
+        D_Table_2,
+        relationships=["t1_rel"],
+    )
+    engine.build_schema()
+
+    query = "query { sample_table_1s { t2_rel { t1_rel { t2_rel { int_field } } } } }"
+
+    with db_sync("D") as db:
+        res = engine.execute_query(query=query, variables=None, db_session=db)
+
+        assert res.errors is not None
+
+
+async def test_query_depth_exceeded_async(db_async):
+    engine = AlchemyQLAsync(max_query_depth=2)
+    engine.register(D_Table_1, relationships=["t2_rel"])
+    engine.register(
+        D_Table_2,
+        relationships=["t1_rel"],
+    )
+    engine.build_schema()
+
+    query = "query { sample_table_1s { t2_rel { t1_rel { t2_rel { int_field } } } } }"
+
+    async with db_async("D") as db:
+        res = await engine.execute_query(query=query, variables=None, db_session=db)
+
+        assert res.errors is not None

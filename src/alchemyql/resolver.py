@@ -34,17 +34,24 @@ def serialize(obj, selected_fields):
         return data
 
 
-def extract_selected_fields(selection_set) -> dict:
+def extract_selected_fields(
+    selection_set, max_depth: int | None, depth: int = 1
+) -> dict:
     """
     Recursively extract selected fields from GraphQL AST.
     Builds nested dictionary of fields where key is the field name and value is True (if column), dict (if relationship)
     """
+    if max_depth and depth > max_depth:
+        raise QueryExecutionError(f"Max query depth exceeded ({max_depth=})")
+
     result = {}
 
     for sel in selection_set.selections:
         name = sel.name.value
         if sel.selection_set:
-            result[name] = extract_selected_fields(sel.selection_set)
+            result[name] = extract_selected_fields(
+                sel.selection_set, max_depth, depth + 1
+            )
         else:
             result[name] = True
 
@@ -179,9 +186,10 @@ def build_async_resolver(table: Table):
         validations(table, **kwargs)
 
         db_session = info.context["session"]
+        max_query_depth = info.context["max_query_depth"]
 
         selection = info.field_nodes[0].selection_set
-        fields = extract_selected_fields(selection)
+        fields = extract_selected_fields(selection, max_query_depth)
 
         query = build_sql_select_stmt(
             table=table,
@@ -209,9 +217,10 @@ def build_sync_resolver(table: Table):
         validations(table, **kwargs)
 
         db_session = info.context["session"]
+        max_query_depth = info.context["max_query_depth"]
 
         selection = info.field_nodes[0].selection_set
-        fields = extract_selected_fields(selection)
+        fields = extract_selected_fields(selection, max_query_depth)
 
         query = build_sql_select_stmt(
             table=table,
