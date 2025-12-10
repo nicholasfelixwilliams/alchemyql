@@ -119,6 +119,7 @@ res = await async_engine.execute_query(query=query, db_session=db)
 | ----- | ----- | ----- | ----- |
 | graphql_name | str | None | Customise the graphql type name (defaults to sql tablename) | 
 | description | str | None | Customise the graphql type descripton | 
+| query | bool | True | Whether to allow direct querying of table |
 | include_fields | list[str] | None | Allow only specific fields to be exposed | 
 | exclude_fields | list[str] | [] | Block specific fields from being exposed |
 | relationships | list[str] | [] | Relationships to be exposed (target table must be registered aswell) |
@@ -129,7 +130,10 @@ res = await async_engine.execute_query(query=query, db_session=db)
 | default_limit | int | None | Default number of records that can be returned in 1 query | 
 | max_limit | int | None | Maximum number of records that can be returned in 1 query | 
 
+
 **NOTE:** if you do not specify include_fields or exclude_fields it will default expose all fields.
+
+**NOTE:** if you specify query=False, then all filtering & ordering & pagination is disabled. This is for the case where a table should only be available via a relationship
 
 **Filtering Options:**
 

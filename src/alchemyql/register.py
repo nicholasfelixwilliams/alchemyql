@@ -127,6 +127,7 @@ def register_transform(
     sqlalchemy_cls,
     graphql_name: str | None,
     description: str | None,
+    query: bool,
     include_fields: list[str] | None,
     exclude_fields: list[str] | None,
     relationships: list[str] | None,
@@ -143,11 +144,19 @@ def register_transform(
     inspected = inspect(sqlalchemy_cls)
 
     fields = build_fields(inspected, include_fields, exclude_fields)
-
-    validate_filter_fields(inspected, filter_fields or [])
-    validate_order_fields(inspected, order_fields or [], default_order)
-    validate_paginated_fields(pagination, default_limit, max_limit)
     validate_relationships(inspected, relationships)
+
+    if query:
+        validate_filter_fields(inspected, filter_fields or [])
+        validate_order_fields(inspected, order_fields or [], default_order)
+        validate_paginated_fields(pagination, default_limit, max_limit)
+    else:
+        filter_fields = []
+        order_fields = []
+        default_order = None
+        pagination = False
+        default_limit = None
+        max_limit = None
 
     # Perform initial transformation
     table = Table(
@@ -163,6 +172,7 @@ def register_transform(
         pagination=pagination,
         default_limit=default_limit,
         max_limit=max_limit,
+        query=query,
     )
 
     return table

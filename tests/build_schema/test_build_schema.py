@@ -234,6 +234,27 @@ def test_build_schema_d_combination(cls: type[AlchemyQL]):
 
 
 @pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
+def test_build_schema_d_non_queryable_table(cls: type[AlchemyQL]):
+    engine = cls()
+
+    engine.register(
+        D_Table_1,
+        include_fields=["int_field", "string_field"],
+        relationships=["t2_rel"],
+    )
+    engine.register(
+        D_Table_2,
+        query=False,
+        include_fields=["int_field", "string_field"],
+    )
+    engine.build_schema()
+
+    expected = read_data_file("D_test_case_non_queryable_table.txt")
+
+    assert engine.get_schema() == expected
+
+
+@pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
 def test_build_with_invalid_relationships(cls: type[AlchemyQL]):
     engine = cls()
 

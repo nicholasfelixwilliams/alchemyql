@@ -33,4 +33,7 @@ class Table:
     default_limit   : int | None
     max_limit       : int | None
 
+    # Querying Details
+    query           : bool
+
     # fmt: on
