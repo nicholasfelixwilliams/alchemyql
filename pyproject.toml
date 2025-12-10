@@ -1,6 +1,6 @@
 [project]
 name = "alchemyql"
-version = "0.0.1a2"
+version = "0.0.1a3"
 description = "Lightweight Graph QL engine powered by SQL Alchemy"
 readme = "README.md"
 authors = [
