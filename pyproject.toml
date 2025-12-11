@@ -39,4 +39,11 @@ dev = [
     "pytest-asyncio>=1.3.0",
     "pytest-cov>=7.0.0",
     "ruff>=0.14.6",
+    "fastapi>=0.110.0",
+    "httpx>=0.28.1",
+]
+
+[project.optional-dependencies]
+fastapi = [
+    "fastapi>=0.110.0"
 ]

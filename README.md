@@ -46,6 +46,9 @@ poetry add alchemyql
 
 # Using uv
 uv add alchemyql
+
+# With FastAPI Extension
+uv add alchemyql[fastapi]
 ```
 
 ---
@@ -157,6 +160,13 @@ All other types are not currently supported for filtering.
 AlchemyQL uses the "alchemyql" logger.
 
 Other docs can be found in: <a href="https://github.com/nicholasfelixwilliams/alchemyql/tree/main/docs" target="_blank">docs/</a>
+
+---
+
+### 📘 Extensions
+
+AlchemyQL has the following extensions:
+ - FastAPI - sync and async pre-created routers available (see <a href="https://github.com/nicholasfelixwilliams/alchemyql/tree/main/docs/EXAMPLE-FASTAPI.md" target="_blank">Doc</a> )  
 
 ---
 
