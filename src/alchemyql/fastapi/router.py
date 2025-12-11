@@ -34,7 +34,7 @@ def create_alchemyql_router_sync(
     def auth_helper():
         if auth_dependency:
             return Security(auth_dependency)
-        return None
+        return Security(lambda: True)
 
     @router.get(
         path,
@@ -81,7 +81,7 @@ def create_alchemyql_router_async(
     def auth_helper():
         if auth_dependency:
             return Security(auth_dependency)
-        return None
+        return Security(lambda: True)
 
     @router.get(
         path,
