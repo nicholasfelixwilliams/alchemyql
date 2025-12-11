@@ -5,7 +5,7 @@ from datetime import date, datetime, time
 from pathlib import Path
 
 import pytest
-from sqlalchemy import create_engine, insert
+from sqlalchemy import StaticPool, create_engine, insert
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -75,13 +75,17 @@ def populate_db_stmts(base, test_db: str):
 def db_sync():
     @contextmanager
     def _factory(db_name):
-        engine = create_engine("sqlite:///:memory:")
+        engine = create_engine(
+            "sqlite:///:memory:",
+            poolclass=StaticPool,
+            connect_args={"check_same_thread": False},
+        )
         base = TEST_DATABASES[db_name]
 
         # Create DB tables
         base.metadata.create_all(engine)
 
-        session_factory = sessionmaker(bind=engine)
+        session_factory = sessionmaker(bind=engine, expire_on_commit=False)
         session = session_factory()
 
         for stmt in populate_db_stmts(base, db_name):
@@ -105,7 +109,9 @@ def db_sync():
 def db_async():
     @asynccontextmanager
     async def _factory(db_name):
-        engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+        engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
+        )
         base = TEST_DATABASES[db_name]
 
         # Create DB tables
@@ -113,9 +119,9 @@ def db_async():
             await conn.run_sync(base.metadata.create_all)
 
         session_factory = sessionmaker(
-            bind=engine,
+            bind=engine,  # type: ignore
             class_=AsyncSession,
-            expire_on_commit=False,  # type: ignore
+            expire_on_commit=False,
         )
         async with session_factory() as session:  # type: ignore
             for stmt in populate_db_stmts(base, db_name):
