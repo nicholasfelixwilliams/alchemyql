@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
@@ -14,20 +15,30 @@ from .databases.a import A_Table
 
 schema = r'"type Query {\n  sample_tables: [sample_table]\n}\n\n\"\"\"SAMPLE_TABLE\"\"\"\ntype sample_table {\n  string_field: String!\n}"'
 
-query = "query { sample_tables { string_field } }"
-
-result = {
-    "data": {
-        "sample_tables": [
-            {"string_field": "One"},
-            {"string_field": "Two"},
-            {"string_field": "Three"},
-            {"string_field": "Four"},
-            {"string_field": "Five"},
-        ]
-    },
-    "errors": None,
-}
+execute_params = [
+    (
+        "query { sample_tables { string_field } }",
+        {
+            "data": {
+                "sample_tables": [
+                    {"string_field": "One"},
+                    {"string_field": "Two"},
+                    {"string_field": "Three"},
+                    {"string_field": "Four"},
+                    {"string_field": "Five"},
+                ]
+            },
+        },
+    ),
+    (
+        "query { does_not_exist { field }}",
+        {
+            "errors": [
+                "Cannot query field 'does_not_exist' on type 'Query'.\n\nGraphQL request:1:9\n1 | query { does_not_exist { field }}\n  |         ^"
+            ]
+        },
+    ),
+]
 
 
 def build_engine(cls: type[AlchemyQL]) -> AlchemyQL:
@@ -104,7 +115,8 @@ async def test_sync_get_schema_async_auth():
     assert res.text == schema
 
 
-def test_sync_execute_query_sync(db_sync):
+@pytest.mark.parametrize(("query", "response"), execute_params)
+def test_sync_execute_query_sync(db_sync, query, response):
     engine = build_engine(AlchemyQLSync)
 
     app = FastAPI()
@@ -112,15 +124,14 @@ def test_sync_execute_query_sync(db_sync):
         app.include_router(create_alchemyql_router_sync(engine, lambda: db))  # type: ignore
         client = TestClient(app)
 
-        res = client.post(
-            "/graphql", json={"query": "query { sample_tables { string_field } }"}
-        )
+        res = client.post("/graphql", json={"query": query})
 
         assert res.status_code == 200
-        assert res.json() == result
+        assert res.json() == response
 
 
-async def test_sync_execute_query_async(db_async):
+@pytest.mark.parametrize(("query", "response"), execute_params)
+async def test_sync_execute_query_async(db_async, query, response):
     engine = build_engine(AlchemyQLAsync)
 
     async with db_async("A") as db:
@@ -133,4 +144,4 @@ async def test_sync_execute_query_async(db_async):
         res = client.post("/graphql", json={"query": query})
 
         assert res.status_code == 200
-        assert res.json() == result
+        assert res.json() == response
