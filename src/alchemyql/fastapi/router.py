@@ -50,6 +50,7 @@ def create_alchemyql_router_sync(
         status_code=status.HTTP_200_OK,
         summary="Execute GraphQL Query",
         description="Executes a GraphQL query and returns the result.",
+        response_model_exclude_none=True,
     )
     def graphql_execute(
         request: GraphQLRequest, db=Depends(db_dependency), _=auth_helper()
@@ -97,6 +98,7 @@ def create_alchemyql_router_async(
         status_code=status.HTTP_200_OK,
         summary="Execute GraphQL Query",
         description="Executes a GraphQL query and returns the result.",
+        response_model_exclude_none=True,
     )
     async def graphql_execute(
         request: GraphQLRequest, db=Depends(db_dependency), _=auth_helper()
