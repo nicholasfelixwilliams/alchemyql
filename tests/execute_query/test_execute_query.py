@@ -191,3 +191,167 @@ async def test_query_depth_exceeded_async(db_async):
         res = await engine.execute_query(query=query, variables=None, db_session=db)
 
         assert res.errors is not None
+
+
+def test_sync_query_with_fragment_spread(db_sync):
+    engine = build_ql_engine(AlchemyQLSync, "A")
+    query = """
+    query {
+      sample_tables {
+        ...SampleFields
+      }
+    }
+
+    fragment SampleFields on sample_table {
+      int_field
+      string_field
+    }
+    """
+
+    with db_sync("A") as db:
+        res = engine.execute_query(query=query, variables=None, db_session=db)
+
+        assert res.errors is None
+        assert res.data == {
+            "sample_tables": [
+                {"int_field": 1, "string_field": "One"},
+                {"int_field": 2, "string_field": "Two"},
+                {"int_field": 3, "string_field": "Three"},
+                {"int_field": 4, "string_field": "Four"},
+                {"int_field": 5, "string_field": "Five"},
+            ]
+        }
+
+
+async def test_async_query_with_inline_fragment(db_async):
+    engine = build_ql_engine(AlchemyQLAsync, "A")
+    query = """
+    query {
+      sample_tables {
+        ... on sample_table {
+          int_field
+          string_field
+        }
+      }
+    }
+    """
+
+    async with db_async("A") as db:
+        res = await engine.execute_query(query=query, variables=None, db_session=db)
+
+        assert res.errors is None
+        assert res.data == {
+            "sample_tables": [
+                {"int_field": 1, "string_field": "One"},
+                {"int_field": 2, "string_field": "Two"},
+                {"int_field": 3, "string_field": "Three"},
+                {"int_field": 4, "string_field": "Four"},
+                {"int_field": 5, "string_field": "Five"},
+            ]
+        }
+
+
+def test_query_with_fragment_spread_merges_relationship_fields(db_sync):
+    engine = build_ql_engine(AlchemyQLSync, "D")
+    query = """
+    query {
+      sample_table_1s(limit: 1) {
+        t2_rel {
+          ...RelatedIntField
+          ...RelatedStringField
+        }
+      }
+    }
+
+    fragment RelatedIntField on sample_table_2 {
+      int_field
+    }
+
+    fragment RelatedStringField on sample_table_2 {
+      string_field
+    }
+    """
+
+    with db_sync("D") as db:
+        res = engine.execute_query(query=query, variables=None, db_session=db)
+
+        assert res.errors is None
+        assert res.data == {
+            "sample_table_1s": [{"t2_rel": {"int_field": 1, "string_field": "One"}}]
+        }
+
+
+def test_sync_limit_zero_is_invalid(db_sync):
+    engine = build_ql_engine(AlchemyQLSync, "A")
+
+    with db_sync("A") as db:
+        res = engine.execute_query(
+            query="query { sample_tables(limit: 0) { int_field } }",
+            variables=None,
+            db_session=db,
+        )
+
+        assert res.errors is not None
+
+
+async def test_async_limit_zero_is_invalid(db_async):
+    engine = build_ql_engine(AlchemyQLAsync, "A")
+
+    async with db_async("A") as db:
+        res = await engine.execute_query(
+            query="query { sample_tables(limit: 0) { int_field } }",
+            variables=None,
+            db_session=db,
+        )
+
+        assert res.errors is not None
+
+
+def test_custom_query_name(db_sync):
+    engine = AlchemyQLSync()
+    engine.register(A_Table, query_name="records")
+    engine.build_schema()
+
+    with db_sync("A") as db:
+        res = engine.execute_query(
+            query="query { records { int_field } }",
+            variables=None,
+            db_session=db,
+        )
+
+        assert res.errors is None
+        assert res.data == {
+            "records": [
+                {"int_field": 1},
+                {"int_field": 2},
+                {"int_field": 3},
+                {"int_field": 4},
+                {"int_field": 5},
+            ]
+        }
+
+
+@pytest.mark.parametrize(
+    ("filter_operation", "value", "expected"),
+    [
+        ("icontains", "ree", [{"string_field": "Three"}]),
+        ("istartswith", "thr", [{"string_field": "Three"}]),
+        ("iendswith", "NE", [{"string_field": "One"}]),
+    ],
+)
+def test_case_insensitive_string_filters(db_sync, filter_operation, value, expected):
+    engine = build_ql_engine(AlchemyQLSync, "A")
+
+    with db_sync("A") as db:
+        res = engine.execute_query(
+            query=(
+                "query { sample_tables"
+                f'(filter: {{ string_field: {{ {filter_operation}: "{value}" }} }})'
+                " { string_field } }"
+            ),
+            variables=None,
+            db_session=db,
+        )
+
+        assert res.errors is None
+        assert res.data == {"sample_tables": expected}

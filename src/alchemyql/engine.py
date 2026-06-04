@@ -39,6 +39,7 @@ class AlchemyQL(ABC):
         self,
         sqlalchemy_cls,
         graphql_name: str | None = None,
+        query_name: str | None = None,
         description: str | None = None,
         query: bool = True,
         include_fields: list[str] | None = None,
@@ -56,6 +57,7 @@ class AlchemyQL(ABC):
 
         Options:
          - graphql_name - Name to give GraphQL type (defaults to tablename)
+         - query_name - Name to give top-level GraphQL query field (defaults to graphql name + "s")
          - description - Description to give GraphQL type
          - query - whether to support direct querying of table
          - include_fields - list of column names to expose
@@ -72,6 +74,7 @@ class AlchemyQL(ABC):
         table = register_transform(
             sqlalchemy_cls,
             graphql_name,
+            query_name,
             description,
             query,
             include_fields,
@@ -92,6 +95,12 @@ class AlchemyQL(ABC):
         # Checks the name is not already in use
         if any(it.graphql_name == table.graphql_name for it in self.tables):
             raise ConfigurationError("Table with same Graph QL name already registerd")
+
+        # Checks the query name is not already in use
+        if any(it.query_name == table.query_name for it in self.tables):
+            raise ConfigurationError(
+                "Table with same Graph QL query name already registerd"
+            )
 
         self.tables.append(table)
         log.debug(

@@ -33,6 +33,16 @@ def test_register_duplicate_graphql_name(cls: type[AlchemyQL]):
 
 
 @pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
+def test_register_duplicate_query_name(cls: type[AlchemyQL]):
+    engine = cls()
+
+    engine.register(B_Table_1, query_name="tables")
+
+    with pytest.raises(ConfigurationError):
+        engine.register(B_Table_2, query_name="tables")
+
+
+@pytest.mark.parametrize("cls", [AlchemyQLSync, AlchemyQLAsync])
 def test_register_all_tables_a(cls: type[AlchemyQL]):
     engine = cls()
 

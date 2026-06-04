@@ -133,7 +133,7 @@ def build_gql_schema(tables: list[Table], is_async: bool) -> GraphQLSchema:
             args["filter"] = GraphQLArgument(
                 GraphQLInputObjectType(
                     name=f"{table.graphql_name}_filter",
-                    fields=lambda f=filter_fields: f,
+                    fields=lambda f=filter_fields: f,  # type: ignore[misc]
                 )  # type: ignore
             )
 
@@ -149,7 +149,8 @@ def build_gql_schema(tables: list[Table], is_async: bool) -> GraphQLSchema:
             }
             args["order"] = GraphQLArgument(
                 GraphQLInputObjectType(
-                    name=f"{table.graphql_name}_order", fields=lambda o=order_fields: o
+                    name=f"{table.graphql_name}_order",
+                    fields=lambda o=order_fields: o,  # type: ignore[misc]
                 )  # type: ignore
             )
 
@@ -160,11 +161,14 @@ def build_gql_schema(tables: list[Table], is_async: bool) -> GraphQLSchema:
 
         # Final query field
         if table.query:
-            query_fields[table.graphql_name + "s"] = GraphQLField(
+            query_fields[table.query_name] = GraphQLField(
                 GraphQLList(base_object), args=args, resolve=resolver
             )
 
     # Step 4 — Build root query
-    query = GraphQLObjectType(name="Query", fields=lambda q=query_fields: q)
+    query = GraphQLObjectType(
+        name="Query",
+        fields=lambda q=query_fields: q,  # type: ignore[misc]
+    )
 
     return GraphQLSchema(query=query)  # type: ignore

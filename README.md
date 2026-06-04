@@ -28,6 +28,7 @@ Alchemy QL's key features include:
     - Ordering
     - Pagination (using offset & limit)
 - **Sync & Async support** 
+- **Fragment Query support** 
 - **Optimised SQL Queries** 
 - **ORM Support** - Currently supported sqlalchemy orm:
     - Declarative base with mapping 
@@ -68,7 +69,7 @@ uv add alchemyql[fastapi]
 from alchemyql import AlchemyQLSync, AlchemyQLAsync
 
 sync_engine = AlchemyQLSync()
-async_engine = AlchemyQLSync()
+async_engine = AlchemyQLAsync()
 ```
 
 **Step 2** - Register your sqlalchemy tables:
@@ -78,6 +79,7 @@ from your_db import Table
 
 engine.register(
     Table, 
+    query_name="tables",
     include_fields=["field_one", "field_two"],
     filter_fields=["field_one"],
     order_fields=["field_one"],
@@ -121,6 +123,7 @@ res = await async_engine.execute_query(query=query, db_session=db)
 | Key   | Type  | Default | Description |
 | ----- | ----- | ----- | ----- |
 | graphql_name | str | None | Customise the graphql type name (defaults to sql tablename) | 
+| query_name | str | None | Customise the top-level graphql query field name (defaults to graphql name + "s") | 
 | description | str | None | Customise the graphql type descripton | 
 | query | bool | True | Whether to allow direct querying of table |
 | include_fields | list[str] | None | Allow only specific fields to be exposed | 
@@ -145,7 +148,7 @@ res = await async_engine.execute_query(query=query, db_session=db)
 | int | eq, ne, gt, ge, lt, le, in |
 | float | eq, ne, gt, ge, lt, le, in |
 | bool | eq, ne |
-| str | eq, ne, contains, startswith, endswith, in |
+| str | eq, ne, contains, startswith, endswith, icontains, istartswith, iendswith, in |
 | date | eq, ne, gt, ge, lt, le, in |
 | datetime | eq, ne, gt, ge, lt, le, in |
 | time | eq, ne, gt, ge, lt, le, in |
@@ -160,6 +163,18 @@ All other types are not currently supported for filtering.
 AlchemyQL uses the "alchemyql" logger.
 
 Other docs can be found in: <a href="https://github.com/nicholasfelixwilliams/alchemyql/tree/main/docs" target="_blank">docs/</a>
+
+---
+
+### Security Notes
+
+AlchemyQL is read-only, but it can still expose sensitive data if tables, fields, or relationships are registered too broadly.
+
+- Prefer `include_fields` for public APIs so new database columns are not exposed automatically.
+- Register only relationships that are safe for callers to traverse.
+- Use `max_query_depth`, `pagination`, `default_limit`, and `max_limit` for externally reachable endpoints.
+- Keep `filter_fields` and `order_fields` limited to fields that are indexed or safe to reveal.
+- Add authentication and authorization at the framework layer, for example with the FastAPI router `auth_dependency`.
 
 ---
 

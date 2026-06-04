@@ -126,6 +126,7 @@ def validate_relationships(inspected, relationship_list: list[str] | None):
 def register_transform(
     sqlalchemy_cls,
     graphql_name: str | None,
+    query_name: str | None,
     description: str | None,
     query: bool,
     include_fields: list[str] | None,
@@ -158,11 +159,14 @@ def register_transform(
         default_limit = None
         max_limit = None
 
+    graphql_table_name = (graphql_name or sqlalchemy_cls.__tablename__).lower()
+
     # Perform initial transformation
     table = Table(
         sqlalchemy_cls=sqlalchemy_cls,
         inspected=inspected,
-        graphql_name=(graphql_name or sqlalchemy_cls.__tablename__).lower(),
+        graphql_name=graphql_table_name,
+        query_name=(query_name or f"{graphql_table_name}s").lower(),
         description=description or sqlalchemy_cls.__tablename__,
         fields=fields,
         relationships=relationships or [],
