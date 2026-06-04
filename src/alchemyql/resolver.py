@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Any
 
 from sqlalchemy import Select, desc, select
-from sqlalchemy.orm import joinedload, load_only
+from sqlalchemy.orm import joinedload, load_only, selectinload
 
 from .errors import QueryExecutionError
 from .models import Table
@@ -60,7 +60,7 @@ def extract_selected_fields(
 
 def build_rels(sqlalchemy_cls, fields: dict):
     """
-    Recursively build joinedload options for nested relationships.
+    Recursively build joinedload/selectinload options for nested relationships.
     This uses the input field list format from "extract_selected_fields"
     """
     joins = []
@@ -72,7 +72,10 @@ def build_rels(sqlalchemy_cls, fields: dict):
             # Relationship SQLAlchemy class
             rel_cls = rel.prop.mapper.class_
 
-            join = joinedload(rel)
+            if rel.property.uselist:
+                join = selectinload(rel)
+            else:
+                join = joinedload(rel)
 
             # Columns to load for this relationship
             if cols := [

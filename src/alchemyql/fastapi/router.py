@@ -2,6 +2,7 @@ from typing import Any, Callable
 
 # This might create import errors if fastapi/pydantic are not installed
 from fastapi import APIRouter, Depends, Security, status
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 
 from ..engine import AlchemyQLAsync, AlchemyQLSync
@@ -43,7 +44,7 @@ def create_alchemyql_router_sync(
         description="Returns the full GraphQL schema in SDL format.",
     )
     def graphql_schema(_=auth_helper()):
-        return engine.get_schema()
+        return PlainTextResponse(content=engine.get_schema(), media_type="text/plain")
 
     @router.post(
         path,
@@ -91,7 +92,7 @@ def create_alchemyql_router_async(
         description="Returns the full GraphQL schema in SDL format.",
     )
     def graphql_schema(_=auth_helper()):
-        return engine.get_schema()
+        return PlainTextResponse(content=engine.get_schema(), media_type="text/plain")
 
     @router.post(
         path,

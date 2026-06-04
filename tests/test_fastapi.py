@@ -13,7 +13,14 @@ from alchemyql.fastapi.router import (
 
 from .databases.a import A_Table
 
-schema = r'"type Query {\n  sample_tables: [sample_table]\n}\n\n\"\"\"SAMPLE_TABLE\"\"\"\ntype sample_table {\n  string_field: String!\n}"'
+schema = """type Query {
+  sample_tables: [sample_table]
+}
+
+\"\"\"SAMPLE_TABLE\"\"\"
+type sample_table {
+  string_field: String!
+}"""
 
 execute_params = [
     (
