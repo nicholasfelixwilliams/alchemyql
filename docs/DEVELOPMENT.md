@@ -23,9 +23,10 @@ To run code linting:
 ```sh
 uv run ruff format .
 uv run ruff check .
+uv run mypy
 ```
 
-Formating is required and enforced via CI. 
+Formatting and typing checks are required and enforced via CI. 
 
 ## Testing 
 

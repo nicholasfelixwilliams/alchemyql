@@ -49,6 +49,9 @@ input StringFilter {
   contains: String
   startswith: String
   endswith: String
+  icontains: String
+  istartswith: String
+  iendswith: String
   in: [String]
 }
 

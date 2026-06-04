@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
+from typing import Any
 
 
 class Order(Enum):
@@ -13,8 +14,9 @@ class Table:
 
     # Table details
     sqlalchemy_cls  : type 
-    inspected       : type
+    inspected       : Any
     graphql_name    : str
+    query_name      : str
     description     : str
 
     # Fields Details

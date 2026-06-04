@@ -39,6 +39,9 @@ jobs:
       - name: Check code formatting
         run: uv run ruff format --check --diff .
 
+      - name: Check typing
+        run: uv run mypy
+
 
   build:
     name: Build package

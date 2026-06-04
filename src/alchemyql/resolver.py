@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Any
 
+from graphql import FragmentSpreadNode, InlineFragmentNode
 from sqlalchemy import Select, desc, select
 from sqlalchemy.orm import joinedload, load_only, selectinload
 
@@ -34,8 +35,24 @@ def serialize(obj, selected_fields):
         return data
 
 
+def merge_selected_fields(base: dict, update: dict) -> dict:
+    """
+    Merge selected field maps from repeated fields and fragments.
+    """
+    for field, subfields in update.items():
+        if (
+            field in base
+            and isinstance(base[field], dict)
+            and isinstance(subfields, dict)
+        ):
+            merge_selected_fields(base[field], subfields)
+        else:
+            base[field] = subfields
+    return base
+
+
 def extract_selected_fields(
-    selection_set, max_depth: int | None, depth: int = 1
+    selection_set, max_depth: int | None, fragments: dict | None = None, depth: int = 1
 ) -> dict:
     """
     Recursively extract selected fields from GraphQL AST.
@@ -45,12 +62,35 @@ def extract_selected_fields(
         raise QueryExecutionError(f"Max query depth exceeded ({max_depth=})")
 
     result = {}
+    fragments = fragments or {}
 
     for sel in selection_set.selections:
+        if isinstance(sel, FragmentSpreadNode):
+            fragment = fragments[sel.name.value]
+            merge_selected_fields(
+                result,
+                extract_selected_fields(
+                    fragment.selection_set, max_depth, fragments, depth
+                ),
+            )
+            continue
+
+        if isinstance(sel, InlineFragmentNode):
+            merge_selected_fields(
+                result,
+                extract_selected_fields(sel.selection_set, max_depth, fragments, depth),
+            )
+            continue
+
         name = sel.name.value
         if sel.selection_set:
-            result[name] = extract_selected_fields(
-                sel.selection_set, max_depth, depth + 1
+            merge_selected_fields(
+                result,
+                {
+                    name: extract_selected_fields(
+                        sel.selection_set, max_depth, fragments, depth + 1
+                    )
+                },
             )
         else:
             result[name] = True
@@ -116,7 +156,8 @@ def build_sql_select_stmt(
     rels = {name: val for name, val in fields.items() if isinstance(val, dict)}
 
     stmt = select(table.sqlalchemy_cls)
-    stmt = stmt.options(load_only(*cols))
+    if cols:
+        stmt = stmt.options(load_only(*cols))
     if rels:
         stmt = stmt.options(*build_rels(table.sqlalchemy_cls, rels))
 
@@ -145,6 +186,12 @@ def build_sql_select_stmt(
                     stmt = stmt.where(column.startswith(val))
                 elif op == "endswith":
                     stmt = stmt.where(column.endswith(val))
+                elif op == "icontains":
+                    stmt = stmt.where(column.ilike(f"%{val}%"))
+                elif op == "istartswith":
+                    stmt = stmt.where(column.ilike(f"{val}%"))
+                elif op == "iendswith":
+                    stmt = stmt.where(column.ilike(f"%{val}"))
 
     # Step 3 - Build pagination clauses (OFFSET, LIMIT)
     if offset is not None:
@@ -165,14 +212,16 @@ def build_sql_select_stmt(
 
 def validations(table: Table, **kwargs):
     # Validate limit
-    if limit := kwargs.get("limit"):
+    limit = kwargs.get("limit")
+    if limit is not None:
         if limit < 1 or (table.max_limit and limit > table.max_limit):
             raise QueryExecutionError(
                 f"Provided Limit is out of bounds (Value: {limit}, Min: 1, Max: {table.max_limit})"
             )
 
     # Validate offset
-    if offset := kwargs.get("offset"):
+    offset = kwargs.get("offset")
+    if offset is not None:
         if offset < 0:
             raise QueryExecutionError(
                 f"Provided Offset is negative (Value: {offset}, Min: 0)"
@@ -192,7 +241,7 @@ def build_async_resolver(table: Table):
         max_query_depth = info.context["max_query_depth"]
 
         selection = info.field_nodes[0].selection_set
-        fields = extract_selected_fields(selection, max_query_depth)
+        fields = extract_selected_fields(selection, max_query_depth, info.fragments)
 
         query = build_sql_select_stmt(
             table=table,
@@ -223,7 +272,7 @@ def build_sync_resolver(table: Table):
         max_query_depth = info.context["max_query_depth"]
 
         selection = info.field_nodes[0].selection_set
-        fields = extract_selected_fields(selection, max_query_depth)
+        fields = extract_selected_fields(selection, max_query_depth, info.fragments)
 
         query = build_sql_select_stmt(
             table=table,
