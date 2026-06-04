@@ -47,3 +47,12 @@ dev = [
 fastapi = [
     "fastapi>=0.110.0"
 ]
+
+[tool.mypy]
+python_version = "3.12"
+packages = ["alchemyql"]
+strict = false
+warn_return_any = false
+warn_unused_configs = true
+ignore_missing_imports = true
+disable_error_code = ["var-annotated"]
