@@ -281,6 +281,34 @@ def test_query_with_fragment_spread_merges_relationship_fields(db_sync):
         }
 
 
+def test_query_with_fragment_spread_merges_repeated_relationship(db_sync):
+    engine = build_ql_engine(AlchemyQLSync, "D")
+    query = """
+    query {
+      sample_table_1s(limit: 1) {
+        t2_rel {
+          int_field
+        }
+        ...RootRelationshipFields
+      }
+    }
+
+    fragment RootRelationshipFields on sample_table_1 {
+      t2_rel {
+        string_field
+      }
+    }
+    """
+
+    with db_sync("D") as db:
+        res = engine.execute_query(query=query, variables=None, db_session=db)
+
+        assert res.errors is None
+        assert res.data == {
+            "sample_table_1s": [{"t2_rel": {"int_field": 1, "string_field": "One"}}]
+        }
+
+
 def test_sync_limit_zero_is_invalid(db_sync):
     engine = build_ql_engine(AlchemyQLSync, "A")
 

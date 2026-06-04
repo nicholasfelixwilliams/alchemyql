@@ -212,14 +212,16 @@ def build_sql_select_stmt(
 
 def validations(table: Table, **kwargs):
     # Validate limit
-    if limit := kwargs.get("limit"):
+    limit = kwargs.get("limit")
+    if limit is not None:
         if limit < 1 or (table.max_limit and limit > table.max_limit):
             raise QueryExecutionError(
                 f"Provided Limit is out of bounds (Value: {limit}, Min: 1, Max: {table.max_limit})"
             )
 
     # Validate offset
-    if offset := kwargs.get("offset"):
+    offset = kwargs.get("offset")
+    if offset is not None:
         if offset < 0:
             raise QueryExecutionError(
                 f"Provided Offset is negative (Value: {offset}, Min: 0)"
