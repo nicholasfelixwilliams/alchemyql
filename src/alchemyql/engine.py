@@ -143,8 +143,8 @@ class AlchemyQL(ABC):
 
 
 class AlchemyQLSync(AlchemyQL):
-    def __init__(self, max_query_depth: int | None = None, *args, **kwargs):
-        super().__init__(max_query_depth=max_query_depth, *args, **kwargs)
+    def __init__(self, max_query_depth: int | None = None):
+        super().__init__(max_query_depth=max_query_depth)
         self.is_async = False
 
     def execute_query(
@@ -184,8 +184,8 @@ class AlchemyQLSync(AlchemyQL):
 
 
 class AlchemyQLAsync(AlchemyQL):
-    def __init__(self, max_query_depth: int | None = None, *args, **kwargs):
-        super().__init__(max_query_depth=max_query_depth, *args, **kwargs)
+    def __init__(self, max_query_depth: int | None = None):
+        super().__init__(max_query_depth=max_query_depth)
         self.is_async = True
 
     async def execute_query(
